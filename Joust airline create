@@ -1,0 +1,115 @@
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema joust
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema joust
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `joust` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `joust` ;
+
+-- -----------------------------------------------------
+-- Table `joust`.`Aircraft`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `joust`.`Aircraft` (
+  `tail_num` VARCHAR(45) NOT NULL COMMENT '',
+  `model` VARCHAR(45) NOT NULL COMMENT '',
+  `status` VARCHAR(45) NOT NULL COMMENT '',
+  `location` VARCHAR(45) NOT NULL COMMENT '',
+  `last_update` DATETIME(1) NOT NULL COMMENT '',
+  `notes` VARCHAR(45) NULL COMMENT '',
+  `status` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`tail_num`)  COMMENT '',
+  UNIQUE INDEX `idAircraft_UNIQUE` (`tail_num` ASC)  COMMENT '')
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `joust`.`Engine`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `joust`.`Engine` (
+  `serial_num` INT NOT NULL COMMENT '',
+  `manufacturer` VARCHAR(45) NULL COMMENT '',
+  `model` VARCHAR(45) NULL COMMENT '',
+  `Aircraft_tail_num` VARCHAR(45) NOT NULL COMMENT '',
+  `fuel_spec` DOUBLE NOT NULL COMMENT '',
+  `status` VARCHAR(45) NOT NULL COMMENT '',
+  `code` VARCHAR(45) NOT NULL COMMENT '',
+  `notes` VARCHAR(45) NULL COMMENT '',
+  `last_update` VARCHAR(45) NOT NULL COMMENT '',
+  `fuel_last_flight` VARCHAR(45) NULL COMMENT '',
+  `fuel_all_flights` VARCHAR(45) NULL COMMENT '',
+  PRIMARY KEY (`serial_num`)  COMMENT '',
+  UNIQUE INDEX `idEngine_UNIQUE` (`serial_num` ASC)  COMMENT '',
+  INDEX `fk_Engine_Aircraft1_idx` (`Aircraft_tail_num` ASC)  COMMENT '',
+  UNIQUE INDEX `Aircraft_tail_num_UNIQUE` (`Aircraft_tail_num` ASC)  COMMENT '',
+  CONSTRAINT `fk_Engine_Aircraft1`
+    FOREIGN KEY (`Aircraft_tail_num`)
+    REFERENCES `joust`.`Aircraft` (`tail_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `joust`.`Flight`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `joust`.`Flight` (
+  `flight_id` INT NOT NULL COMMENT '',
+  `duration` INT NOT NULL COMMENT '',
+  `start_dt` DATETIME(0) NOT NULL COMMENT '',
+  `end_dt` DATETIME(0) NOT NULL COMMENT '',
+  `totalFuelUsed` INT NOT NULL COMMENT '',
+  `start_lat` DOUBLE NOT NULL COMMENT '',
+  `end_lat` DOUBLE NOT NULL COMMENT '',
+  `start_long` DOUBLE NULL COMMENT '',
+  `end_long` DOUBLE NULL COMMENT '',
+  `Aircraft_tail_num` VARCHAR(45) NOT NULL COMMENT '',
+  `Engine_serial_num` INT NOT NULL COMMENT '',
+  `Engine_serial_num1` INT NULL COMMENT '',
+  `Engine_serial_num2` INT NULL COMMENT '',
+  `Engine_serial_num3` INT NULL COMMENT '',
+  PRIMARY KEY (`flight_id`)  COMMENT '',
+  UNIQUE INDEX `idFlight_UNIQUE` (`flight_id` ASC)  COMMENT '',
+  INDEX `fk_Flight_Aircraft1_idx` (`Aircraft_tail_num` ASC)  COMMENT '',
+  UNIQUE INDEX `Aircraft_tail_num_UNIQUE` (`Aircraft_tail_num` ASC)  COMMENT '',
+  INDEX `fk_Flight_Engine1_idx` (`Engine_serial_num` ASC)  COMMENT '',
+  INDEX `fk_Flight_Engine2_idx` (`Engine_serial_num1` ASC)  COMMENT '',
+  INDEX `fk_Flight_Engine3_idx` (`Engine_serial_num2` ASC)  COMMENT '',
+  INDEX `fk_Flight_Engine4_idx` (`Engine_serial_num3` ASC)  COMMENT '',
+  CONSTRAINT `fk_Flight_Aircraft1`
+    FOREIGN KEY (`Aircraft_tail_num`)
+    REFERENCES `joust`.`Aircraft` (`tail_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Engine1`
+    FOREIGN KEY (`Engine_serial_num`)
+    REFERENCES `joust`.`Engine` (`serial_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Engine2`
+    FOREIGN KEY (`Engine_serial_num1`)
+    REFERENCES `joust`.`Engine` (`serial_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Engine3`
+    FOREIGN KEY (`Engine_serial_num2`)
+    REFERENCES `joust`.`Engine` (`serial_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Engine4`
+    FOREIGN KEY (`Engine_serial_num3`)
+    REFERENCES `joust`.`Engine` (`serial_num`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
