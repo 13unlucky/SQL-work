@@ -1,0 +1,82 @@
+
+CREATE SCHEMA IF NOT EXISTS `JoustDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `JoustDB` ;
+
+	
+	Table `JoustDB`.`Airline`
+CREATE TABLE IF NOT EXISTS `JoustDB`.`Airline` (
+  `idAirline` INT NOT NULL COMMENT '',
+  `airlineName` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`idAirline`)  COMMENT '')
+ENGINE = InnoDB;
+
+	Table `JoustDB`.`Aircraft`
+CREATE TABLE IF NOT EXISTS `JoustDB`.`Aircraft` (
+  `idAircraft` INT NOT NULL COMMENT '',
+  `Airline_idAirline` INT NOT NULL COMMENT '',
+  `tailNumber` VARCHAR(45) NOT NULL COMMENT '',
+  `model` VARCHAR(45) NOT NULL COMMENT '',
+  `status` VARCHAR(45) NOT NULL COMMENT '',
+  PRIMARY KEY (`idAircraft`)  COMMENT '',
+  INDEX `fk_Aircraft_Airline_idx` (`Airline_idAirline` ASC)  COMMENT '',
+  UNIQUE INDEX `idAircraft_UNIQUE` (`idAircraft` ASC)  COMMENT '',
+  UNIQUE INDEX `tailNumber_UNIQUE` (`tailNumber` ASC)  COMMENT '',
+  CONSTRAINT `fk_Aircraft_Airline`
+    FOREIGN KEY (`Airline_idAirline`)
+    REFERENCES `JoustDB`.`Airline` (`idAirline`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+	Table `JoustDB`.`Flight`
+CREATE TABLE IF NOT EXISTS `JoustDB`.`Flight` (
+  `idFlight` INT NOT NULL COMMENT '',
+  `duration` INT NOT NULL COMMENT '',
+  `dateTime` DATE NOT NULL COMMENT '',
+  `totalFuelUsed` INT NOT NULL COMMENT '',
+  `chartFileLocation` VARCHAR(45) NOT NULL COMMENT '',
+  `idDataFile` INT NOT NULL COMMENT '',
+  PRIMARY KEY (`idFlight`)  COMMENT '',
+  UNIQUE INDEX `idFlight_UNIQUE` (`idFlight` ASC)  COMMENT '',
+  UNIQUE INDEX `idDataFile_UNIQUE` (`idDataFile` ASC)  COMMENT '')
+ENGINE = InnoDB;
+
+	Table `JoustDB`.`Engine`
+CREATE TABLE IF NOT EXISTS `JoustDB`.`Engine` (
+  `idEngine` INT NOT NULL COMMENT '',
+  `Aircraft_idAircraft` INT NOT NULL COMMENT '',
+  `fuelEfficiencyTarget` DOUBLE NOT NULL COMMENT '',
+  `fuelEfficiencyAverage` DOUBLE NOT NULL COMMENT '',
+  `chartFileLocation` VARCHAR(45) NULL COMMENT '',
+  `model` VARCHAR(45) NULL COMMENT '',
+  `manufacturer` VARCHAR(45) NULL COMMENT '',
+  PRIMARY KEY (`idEngine`)  COMMENT '',
+  UNIQUE INDEX `idEngine_UNIQUE` (`idEngine` ASC)  COMMENT '',
+  INDEX `fk_Engine_Aircraft1_idx` (`Aircraft_idAircraft` ASC)  COMMENT '',
+  UNIQUE INDEX `chartFileLocation_UNIQUE` (`chartFileLocation` ASC)  COMMENT '',
+  CONSTRAINT `fk_Engine_Aircraft1`
+    FOREIGN KEY (`Aircraft_idAircraft`)
+    REFERENCES `JoustDB`.`Aircraft` (`idAircraft`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+	Table `JoustDB`.`Flight_has_Engine`
+CREATE TABLE IF NOT EXISTS `JoustDB`.`Flight_has_Engine` (
+  `Flight_idFlight` INT NOT NULL COMMENT '',
+  `Engine_idEngine` INT NOT NULL COMMENT '',
+  PRIMARY KEY (`Flight_idFlight`, `Engine_idEngine`)  COMMENT '',
+  INDEX `fk_Flight_has_Engine_Engine1_idx` (`Engine_idEngine` ASC)  COMMENT '',
+  INDEX `fk_Flight_has_Engine_Flight1_idx` (`Flight_idFlight` ASC)  COMMENT '',
+  CONSTRAINT `fk_Flight_has_Engine_Flight1`
+    FOREIGN KEY (`Flight_idFlight`)
+    REFERENCES `JoustDB`.`Flight` (`idFlight`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_has_Engine_Engine1`
+    FOREIGN KEY (`Engine_idEngine`)
+    REFERENCES `JoustDB`.`Engine` (`idEngine`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
